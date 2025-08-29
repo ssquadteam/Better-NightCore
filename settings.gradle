@@ -1,0 +1,6 @@
+rootProject.name = 'nightcore'
+
+include 'main'
+include 'bridge'
+include 'utils'
+include 'paper'

@@ -1,0 +1,63 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+allprojects {
+    group = 'su.nightexpress.nightcore'
+    version = '2.7.13'
+    
+    apply plugin: 'java'
+    apply plugin: 'maven-publish'
+    
+    java {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+        withSourcesJar()
+    }
+    
+    repositories {
+        mavenCentral()
+        maven {
+            name = 'spigotmc-repo'
+            url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+        }
+        maven {
+            name = 'papermc'
+            url = 'https://repo.papermc.io/repository/maven-public/'
+        }
+        maven {
+            name = 'placeholderapi'
+            url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
+        }
+        maven {
+            name = 'opencollab-snapshot'
+            url = 'https://repo.opencollab.dev/maven-snapshots/'
+        }
+        maven {
+            name = 'minecraft-repo'
+            url = 'https://libraries.minecraft.net/'
+        }
+        maven {
+            name = 'jitpack.io'
+            url = 'https://jitpack.io'
+        }
+    }
+    
+    dependencies {
+        compileOnly 'org.jetbrains:annotations:24.0.0'
+    }
+    
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = 'nightexpress'
+            url = 'https://repo.nightexpressdev.com/releases'
+        }
+    }
+}

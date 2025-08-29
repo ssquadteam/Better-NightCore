@@ -11,3 +11,7 @@
 /main/pom.xml.versionsBackup
 /bridge/pom.xml.versionsBackup
 /bridge/target/
+.gradle
+bin
+build
+*/build

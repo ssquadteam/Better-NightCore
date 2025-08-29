@@ -3,7 +3,6 @@ package su.nightexpress.nightcore;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import su.nightexpress.nightcore.bridge.paper.PaperBridge;
-import su.nightexpress.nightcore.bridge.spigot.SpigotBridge;
 import su.nightexpress.nightcore.integration.VaultHook;
 import su.nightexpress.nightcore.integration.permission.PermissionProvider;
 import su.nightexpress.nightcore.integration.permission.impl.LuckPermissionProvider;
@@ -66,7 +65,7 @@ public class Engine {
         Version version = Version.detect();
         if (version.isDropped()) return;
 
-        Software.INSTANCE.load(Version.isPaper() ? new PaperBridge() : new SpigotBridge());
+        Software.INSTANCE.load(new PaperBridge());
         core.info("Server version detected as " + version.getLocalized() + ". Using " + software().getName() + ".");
 
         ItemNbt.load(core);

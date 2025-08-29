@@ -1,0 +1,54 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+}
+
+configurations {
+    compileClasspath {
+        resolutionStrategy {
+            force 'io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT'
+        }
+    }
+}
+
+dependencies {
+    // Internal module dependencies
+    implementation project(':bridge')
+    implementation project(':utils')
+    implementation project(':paper')
+    
+    // External dependencies
+    compileOnly 'io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT'
+    compileOnly 'com.zaxxer:HikariCP:6.0.0'
+    compileOnly 'com.mojang:datafixerupper:8.0.16'
+    compileOnly 'org.xerial:sqlite-jdbc:3.47.0.0'
+    compileOnly 'it.unimi.dsi:fastutil-core:8.5.13'
+    compileOnly('com.github.MilkBowl:VaultAPI:1.7') {
+        exclude group: 'org.bukkit', module: 'bukkit'
+    }
+    compileOnly 'me.clip:placeholderapi:2.11.6'
+    compileOnly 'net.luckperms:api:5.4'
+    compileOnly 'org.geysermc.floodgate:api:2.2.0-SNAPSHOT'
+}
+
+processResources {
+    filteringCharset = 'UTF-8'
+    filesMatching(['**/*.yml', '**/*.yaml', '**/*.properties']) {
+        expand(project.properties)
+    }
+}
+
+shadowJar {
+    archiveFileName = "${rootProject.name}-${version}.jar"
+    destinationDirectory = file("${rootProject.projectDir}/target")
+    
+    // Include only nightcore modules
+    dependencies {
+        include(project(':bridge'))
+        include(project(':utils'))
+        include(project(':paper'))
+    }
+}
+
+build {
+    dependsOn shadowJar
+}

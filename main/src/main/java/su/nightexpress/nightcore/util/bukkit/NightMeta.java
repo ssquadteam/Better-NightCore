@@ -12,7 +12,7 @@ import org.bukkit.inventory.meta.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import su.nightexpress.nightcore.Engine;
-import su.nightexpress.nightcore.bridge.spigot.SpigotBridge;
+
 import su.nightexpress.nightcore.bridge.wrap.NightProfile;
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.config.Writeable;
@@ -331,13 +331,7 @@ public class NightMeta implements Writeable {
         });
 
         if (this.hiddenComponents != null && !this.hiddenComponents.isEmpty() && !this.hideTooltip) {
-            if (Version.isAtLeast(Version.MC_1_21_5)) {
-                Engine.software().hideComponents(itemStack, this.hiddenComponents);
-            }
-            else {
-                SpigotBridge.hideComponentsByName(itemStack, this.hiddenComponents);
-                //ItemUtil.hideAttributes(itemStack);
-            }
+            Engine.software().hideComponents(itemStack, this.hiddenComponents);
         }
     }
 
