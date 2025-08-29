@@ -253,6 +253,6 @@ public abstract class NightPlugin extends JavaPlugin implements NightCorePlugin 
 
     @Override
     public void runTask(@NotNull Runnable runnable) {
-        this.getScheduler().runTask(this, runnable);
+        this.runNextTick(runnable);
     }
 }

@@ -104,7 +104,7 @@ public class Engine {
         else return;
 
         core.info("Found permissions provider: " + permissions.getName());
-        core.runTask(task -> permissions.setup()); // Run after the server load to setup Vault services properly.
+        core.runNextTick(() -> permissions.setup()); // Run after the server load to setup Vault services properly.
     }
 
     public static boolean handleEnable(@NotNull NightPlugin plugin) {
