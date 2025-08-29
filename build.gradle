@@ -5,7 +5,7 @@ plugins {
 
 allprojects {
     group = 'su.nightexpress.nightcore'
-    version = '2.7.13'
+    version = '2.7.14'
     
     apply plugin: 'java'
     apply plugin: 'maven-publish'
@@ -41,6 +41,10 @@ allprojects {
         maven {
             name = 'jitpack.io'
             url = 'https://jitpack.io'
+        }
+        maven {
+            name = 'tcoded-releases'
+            url = 'https://repo.tcoded.com/releases'
         }
     }
     

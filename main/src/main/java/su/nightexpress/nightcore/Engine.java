@@ -12,6 +12,7 @@ import su.nightexpress.nightcore.util.Lists;
 import su.nightexpress.nightcore.util.Plugins;
 import su.nightexpress.nightcore.util.Version;
 import su.nightexpress.nightcore.util.bridge.Software;
+import su.nightexpress.nightcore.util.bukkit.FoliaScheduler;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,6 +23,7 @@ public class Engine {
 
     private static NightCore          core;
     private static PermissionProvider permissions;
+    private static FoliaScheduler     foliaScheduler;
 
     @NotNull
     public static Set<NightPlugin> getChildrens() {
@@ -40,6 +42,12 @@ public class Engine {
         return Software.INSTANCE.get();
     }
 
+    @NotNull
+    public static FoliaScheduler scheduler() {
+        if (foliaScheduler == null) throw new IllegalStateException("FoliaScheduler is not initialized!");
+        return foliaScheduler;
+    }
+
     @Nullable
     public static PermissionProvider getPermissions() {
         return permissions;
@@ -54,8 +62,13 @@ public class Engine {
             VaultHook.shutdown();
         }
 
+        if (foliaScheduler != null) {
+            foliaScheduler.cancelAllTasks();
+        }
+
         CHILDRENS.clear();
         permissions = null;
+        foliaScheduler = null;
         core = null;
     }
 
@@ -64,6 +77,9 @@ public class Engine {
 
         Version version = Version.detect();
         if (version.isDropped()) return;
+
+        foliaScheduler = new FoliaScheduler(instance);
+        core.info("Scheduler initialized for " + (foliaScheduler.isFolia() ? "Folia" : foliaScheduler.isPaper() ? "Paper" : "Spigot") + " server.");
 
         Software.INSTANCE.load(new PaperBridge());
         core.info("Server version detected as " + version.getLocalized() + ". Using " + software().getName() + ".");

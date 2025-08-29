@@ -11,8 +11,14 @@ import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.config.PluginDetails;
 import su.nightexpress.nightcore.language.LangManager;
 import su.nightexpress.nightcore.util.wrapper.UniTask;
+import su.nightexpress.nightcore.Engine;
+import su.nightexpress.nightcore.util.bukkit.FoliaScheduler;
+import su.nightexpress.nightcore.util.bukkit.FoliaTask;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 
 import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
 
 public interface NightCorePlugin extends Plugin {
 
@@ -126,5 +132,80 @@ public interface NightCorePlugin extends Plugin {
     @Deprecated
     default UniTask createAsyncTask(@NotNull Runnable runnable) {
         return this.createTask(runnable).setAsync();
+    }
+
+    // Folia-compatible scheduling methods
+
+    /**
+     * Gets the FoliaScheduler instance for Folia-compatible scheduling.
+     * @return The FoliaScheduler instance
+     */
+    @NotNull
+    default FoliaScheduler getFoliaScheduler() {
+        return Engine.scheduler();
+    }
+
+    /**
+     * Runs a task on the next tick (Folia-compatible).
+     * @param runnable The task to run
+     * @return CompletableFuture that completes when the task finishes
+     */
+    @NotNull
+    default CompletableFuture<Void> runNextTick(@NotNull Runnable runnable) {
+        return this.getFoliaScheduler().runNextTick(runnable);
+    }
+
+    /**
+     * Runs a task asynchronously (Folia-compatible).
+     * @param runnable The task to run
+     * @return CompletableFuture that completes when the task finishes
+     */
+    @NotNull
+    default CompletableFuture<Void> runTaskAsync(@NotNull Runnable runnable) {
+        return this.getFoliaScheduler().runAsync(runnable);
+    }
+
+    /**
+     * Runs a task at a specific location (Folia-compatible).
+     * @param location The location where the task should run
+     * @param runnable The task to run
+     * @return CompletableFuture that completes when the task finishes
+     */
+    @NotNull
+    default CompletableFuture<Void> runAtLocation(@NotNull Location location, @NotNull Runnable runnable) {
+        return this.getFoliaScheduler().runAtLocation(location, runnable);
+    }
+
+    /**
+     * Runs a task for a specific entity (Folia-compatible).
+     * @param entity The entity for which the task should run
+     * @param runnable The task to run
+     * @return CompletableFuture that completes when the task finishes
+     */
+    @NotNull
+    default CompletableFuture<Void> runAtEntity(@NotNull Entity entity, @NotNull Runnable runnable) {
+        return this.getFoliaScheduler().runAtEntity(entity, runnable);
+    }
+
+    /**
+     * Creates a Folia-compatible task.
+     * @param runnable The task to run
+     * @param interval The interval in ticks
+     * @return FoliaTask that can be cancelled
+     */
+    @NotNull
+    default FoliaTask createFoliaTask(@NotNull Runnable runnable, long interval) {
+        return FoliaTask.create(this, runnable, interval);
+    }
+
+    /**
+     * Creates a Folia-compatible async task.
+     * @param runnable The task to run
+     * @param interval The interval in ticks
+     * @return FoliaTask that can be cancelled
+     */
+    @NotNull
+    default FoliaTask createFoliaTaskAsync(@NotNull Runnable runnable, long interval) {
+        return FoliaTask.createAsync(this, runnable, interval);
     }
 }
