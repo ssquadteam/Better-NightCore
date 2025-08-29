@@ -98,28 +98,34 @@ public interface NightCorePlugin extends Plugin {
 
     void runTask(@NotNull Runnable runnable);
 
+    @Deprecated
     default void runTask(@NotNull Consumer<BukkitTask> consumer) {
-        this.getScheduler().runTask(this, consumer);
+        this.runNextTick(() -> consumer.accept(null));
     }
 
+    @Deprecated
     default void runTaskAsync(@NotNull Consumer<BukkitTask> consumer) {
-        this.getScheduler().runTaskAsynchronously(this, consumer);
+        this.runTaskAsync(() -> consumer.accept(null));
     }
 
+    @Deprecated
     default void runTaskLater(@NotNull Consumer<BukkitTask> consumer, long delay) {
-        this.getScheduler().runTaskLater(this, consumer, delay);
+        this.getFoliaScheduler().runLater(() -> consumer.accept(null), delay);
     }
 
+    @Deprecated
     default void runTaskLaterAsync(@NotNull Consumer<BukkitTask> consumer, long delay) {
-        this.getScheduler().runTaskLaterAsynchronously(this, consumer, delay);
+        this.getFoliaScheduler().runLaterAsync(() -> consumer.accept(null), delay);
     }
 
+    @Deprecated
     default void runTaskTimer(@NotNull Consumer<BukkitTask> consumer, long delay, long interval) {
-        this.getScheduler().runTaskTimer(this, consumer, delay, interval);
+        this.getFoliaScheduler().runTimer(() -> consumer.accept(null), delay, interval);
     }
 
+    @Deprecated
     default void runTaskTimerAsync(@NotNull Consumer<BukkitTask> consumer, long delay, long interval) {
-        this.getScheduler().runTaskTimerAsynchronously(this, consumer, delay, interval);
+        this.getFoliaScheduler().runTimerAsync(() -> consumer.accept(null), delay, interval);
     }
 
     @NotNull
