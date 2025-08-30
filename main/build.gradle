@@ -18,11 +18,14 @@ dependencies {
     
     // External dependencies
     compileOnly 'io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT'
-    implementation 'com.tcoded:FoliaLib:0.5.1'
     compileOnly 'com.zaxxer:HikariCP:6.0.0'
     compileOnly 'com.mojang:datafixerupper:8.0.16'
     compileOnly 'org.xerial:sqlite-jdbc:3.47.0.0'
     compileOnly 'it.unimi.dsi:fastutil-core:8.5.13'
+
+    implementation 'redis.clients:jedis:5.1.4'
+    implementation 'org.apache.commons:commons-pool2:2.11.1'
+    implementation 'com.tcoded:FoliaLib:0.5.1'
     compileOnly('com.github.MilkBowl:VaultAPI:1.7') {
         exclude group: 'org.bukkit', module: 'bukkit'
     }
@@ -43,6 +46,8 @@ shadowJar {
     destinationDirectory = file("${rootProject.projectDir}/target")
 
     relocate 'com.tcoded.folialib', 'su.nightexpress.nightcore.lib.folialib'
+    relocate 'redis.clients', 'su.nightexpress.nightcore.lib.redis'
+    relocate 'org.apache.commons.pool2', 'su.nightexpress.nightcore.lib.commons.pool2'
 
     // Include only nightcore modules and FoliaLib
     dependencies {
@@ -50,6 +55,8 @@ shadowJar {
         include(project(':utils'))
         include(project(':paper'))
         include(dependency('com.tcoded:FoliaLib:.*'))
+        include(dependency('redis.clients:jedis:.*'))
+        include(dependency('org.apache.commons:commons-pool2:.*'))
     }
 }
 
