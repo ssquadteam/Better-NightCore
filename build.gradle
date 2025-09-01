@@ -5,7 +5,7 @@ plugins {
 
 allprojects {
     group = 'su.nightexpress.nightcore'
-    version = '2.7.17'
+    version = '2.7.18'
     
     apply plugin: 'java'
     apply plugin: 'maven-publish'
