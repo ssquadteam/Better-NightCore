@@ -42,16 +42,16 @@ jobs:
           SHORT_SHA=$(git rev-parse --short HEAD)
           TAG="v${VERSION}"
           RELEASE_NAME="v${VERSION} - ${SHORT_SHA}"
-          # artifact produced by main:shadowJar -> main/build creates jar under main/target per build.gradle
-          ARTIFACT=$(ls main/target/*-${VERSION}.jar 2>/dev/null | head -n 1 || true)
+          # artifact produced by :main:shadowJar -> configured to output under root ./target per main/build.gradle
+          ARTIFACT=$(ls target/*-${VERSION}.jar 2>/dev/null | head -n 1 || true)
           if [[ -z "$ARTIFACT" ]]; then
             # fallback to conventional root build/libs
             ARTIFACT=$(ls build/libs/*-${VERSION}.jar 2>/dev/null | head -n 1 || true)
           fi
           if [[ -z "$ARTIFACT" ]]; then
             echo "Could not find built JAR for version ${VERSION}" >&2
-            echo "Contents of main/target:" >&2
-            ls -la main/target || true
+            echo "Contents of target:" >&2
+            ls -la target || true
             echo "Contents of build/libs:" >&2
             ls -la build/libs || true
             exit 1
