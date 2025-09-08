@@ -24,6 +24,7 @@ public class Engine {
     private static NightCore          core;
     private static PermissionProvider permissions;
     private static FoliaScheduler     foliaScheduler;
+    private static volatile boolean   isShuttingDown = false;
 
     @NotNull
     public static Set<NightPlugin> getChildrens() {
@@ -48,6 +49,10 @@ public class Engine {
         return foliaScheduler;
     }
 
+    public static boolean isShuttingDown() {
+        return isShuttingDown;
+    }
+
     @Nullable
     public static PermissionProvider getPermissions() {
         return permissions;
@@ -58,6 +63,8 @@ public class Engine {
     }
 
     public static void clear() {
+        isShuttingDown = true;
+
         if (Plugins.hasVault()) {
             VaultHook.shutdown();
         }

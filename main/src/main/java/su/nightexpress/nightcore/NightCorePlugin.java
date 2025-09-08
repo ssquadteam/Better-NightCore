@@ -100,6 +100,8 @@ public interface NightCorePlugin extends Plugin {
 
     void runTask(@NotNull Runnable runnable);
 
+    boolean isShuttingDown();
+
     @Deprecated
     default void runTask(@NotNull Consumer<BukkitTask> consumer) {
         this.runNextTick(() -> consumer.accept(null));
@@ -160,6 +162,10 @@ public interface NightCorePlugin extends Plugin {
      */
     @NotNull
     default CompletableFuture<Void> runNextTick(@NotNull Runnable runnable) {
+        if (this.isShuttingDown()) {
+            runnable.run();
+            return CompletableFuture.completedFuture(null);
+        }
         return this.getFoliaScheduler().runNextTick(runnable);
     }
 

@@ -19,6 +19,7 @@ import java.util.function.Consumer;
 public class FoliaScheduler {
 
     private final FoliaLib foliaLib;
+    private volatile boolean isShutdown = false;
 
     public FoliaScheduler(@NotNull Plugin plugin) {
         this.foliaLib = new FoliaLib(plugin);
@@ -66,6 +67,10 @@ public class FoliaScheduler {
      */
     @NotNull
     public CompletableFuture<Void> runNextTick(@NotNull Runnable runnable) {
+        if (!this.isValid()) {
+            runnable.run();
+            return CompletableFuture.completedFuture(null);
+        }
         return this.foliaLib.getScheduler().runNextTick(task -> runnable.run());
     }
 
@@ -87,6 +92,10 @@ public class FoliaScheduler {
      */
     @NotNull
     public WrappedTask runLater(@NotNull Runnable runnable, long delay) {
+        if (!this.isValid()) {
+            runnable.run();
+            return new DummyWrappedTask();
+        }
         return this.foliaLib.getScheduler().runLater(runnable, delay);
     }
 
@@ -175,12 +184,19 @@ public class FoliaScheduler {
         return this.foliaLib.getScheduler().teleportAsync(entity, location);
     }
 
+    public boolean isValid() {
+        return !this.isShutdown && this.foliaLib != null;
+    }
+
     /**
      * Cancels all tasks associated with this scheduler.
      * Should be called during plugin disable.
      */
     public void cancelAllTasks() {
-        this.foliaLib.getScheduler().cancelAllTasks();
+        this.isShutdown = true;
+        if (this.foliaLib != null) {
+            this.foliaLib.getScheduler().cancelAllTasks();
+        }
     }
 
     /**
@@ -189,6 +205,28 @@ public class FoliaScheduler {
      * @return true if owned by current region
      */
     public boolean isOwnedByCurrentRegion(@NotNull Location location) {
+        if (!this.isValid()) {
+            return true;
+        }
         return this.foliaLib.getScheduler().isOwnedByCurrentRegion(location);
+    }
+
+    /**
+     * Dummy WrappedTask implementation for when scheduler is shut down.
+     */
+    private static class DummyWrappedTask implements WrappedTask {
+        @Override
+        public void cancel() {
+        }
+
+        @Override
+        public boolean isCancelled() {
+            return true;
+        }
+
+        @Override
+        public Object getWrappedTask() {
+            return null;
+        }
     }
 }

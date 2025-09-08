@@ -129,7 +129,11 @@ public abstract class AbstractMenu<P extends NightCorePlugin> implements Menu {
 
     @Override
     public void runNextTick(@NotNull Runnable runnable) {
-        this.plugin.runTask(task -> runnable.run());
+        if (this.plugin.isShuttingDown()) {
+            runnable.run();
+        } else {
+            this.plugin.runTask(task -> runnable.run());
+        }
     }
 
     @Override

@@ -31,6 +31,7 @@ public abstract class NightPlugin extends JavaPlugin implements NightCorePlugin 
 
     protected NightCommand   rootCommand;
     protected List<Runnable> postLoaders;
+    protected volatile boolean isShuttingDown = false;
 
     protected LangRegistry langRegistry;
     protected LangManager    langManager;
@@ -54,6 +55,7 @@ public abstract class NightPlugin extends JavaPlugin implements NightCorePlugin 
 
     @Override
     public void onDisable() {
+        this.isShuttingDown = true;
         this.unloadManagers();
         this.onShutdown();
     }
@@ -69,6 +71,10 @@ public abstract class NightPlugin extends JavaPlugin implements NightCorePlugin 
     public void reload() {
         this.unloadManagers();
         this.loadManagers();
+    }
+
+    public boolean isShuttingDown() {
+        return this.isShuttingDown;
     }
 
     @Override
@@ -286,6 +292,10 @@ public abstract class NightPlugin extends JavaPlugin implements NightCorePlugin 
 
     @Override
     public void runTask(@NotNull Runnable runnable) {
-        this.runNextTick(runnable);
+        if (this.isShuttingDown) {
+            runnable.run();
+        } else {
+            this.runNextTick(runnable);
+        }
     }
 }

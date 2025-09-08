@@ -12,7 +12,10 @@ public class MenuRegistry {
     private static final Map<UUID, MenuViewer> VIEWER_BY_ID = new HashMap<>();
 
     public static void closeAll() {
-        getViewers().stream().map(MenuViewer::getMenu).distinct().forEach(Menu::clear);
+        try {
+            getViewers().stream().map(MenuViewer::getMenu).distinct().forEach(Menu::clear);
+        } catch (Exception e) {
+        }
         VIEWER_BY_ID.clear();
     }
 
