@@ -225,7 +225,12 @@ public class FoliaScheduler {
         }
 
         @Override
-        public Object getWrappedTask() {
+        public boolean isAsync() {
+            return false;
+        }
+
+        @Override
+        public Plugin getOwningPlugin() {
             return null;
         }
     }
