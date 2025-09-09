@@ -25,5 +25,23 @@ public class MySQLConnector extends AbstractConnector {
         this.config.setUsername(databaseConfig.getUsername());
         this.config.setPassword(databaseConfig.getPassword());
         this.config.setMaxLifetime(databaseConfig.getMaxLifetime());
+
+        this.config.setMaximumPoolSize(10);
+        this.config.setMinimumIdle(2);
+        this.config.setConnectionTimeout(10000);
+        this.config.setIdleTimeout(300000);
+        this.config.setLeakDetectionThreshold(60000);
+
+        this.config.setConnectionTestQuery("SELECT 1");
+        this.config.setValidationTimeout(3000);
+
+        this.config.addDataSourceProperty("useServerPrepStmts", "true");
+        this.config.addDataSourceProperty("rewriteBatchedStatements", "true");
+        this.config.addDataSourceProperty("maintainTimeStats", "false");
+        this.config.addDataSourceProperty("useLocalSessionState", "true");
+        this.config.addDataSourceProperty("useLocalTransactionState", "true");
+        this.config.addDataSourceProperty("cacheResultSetMetadata", "true");
+        this.config.addDataSourceProperty("cacheServerConfiguration", "true");
+        this.config.addDataSourceProperty("elideSetAutoCommits", "true");
     }
 }

@@ -88,11 +88,11 @@ public class PlaceholderList<T> {
 
     @NotNull
     public UnaryOperator<String> replacer(@NotNull T source) {
-        return str -> StringUtil.replaceEach(str, this.getEntries(), source);
+        return str -> this.apply(str, source);
     }
 
     @NotNull
     public String apply(@NotNull String str, @NotNull T source) {
-        return this.replacer(source).apply(str);
+        return StringUtil.replaceEach(str, this.getEntries(), source);
     }
 }

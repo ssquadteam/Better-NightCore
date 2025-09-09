@@ -19,8 +19,11 @@ import java.util.HashSet;
 
 public class CoreManager extends AbstractManager<NightCore> {
 
+    private final AsyncMenuProcessor asyncProcessor;
+
     public CoreManager(@NotNull NightCore plugin) {
         super(plugin);
+        this.asyncProcessor = new AsyncMenuProcessor();
     }
 
     @Override
@@ -30,7 +33,8 @@ public class CoreManager extends AbstractManager<NightCore> {
         this.addListener(new MenuListener(this.plugin));
         this.addListener(new UIListener(this.plugin));
 
-        this.addTask(this::tickMenusAndDialogs, 1);
+        this.startAsyncMenuTicker();
+        this.addTask(this::tickDialogs, 1);
         this.addAsyncTask(PlayerProfiles::purgeProfiles, CoreConfig.PROFILE_PURGE_INTERVAL.get());
     }
 
@@ -40,9 +44,34 @@ public class CoreManager extends AbstractManager<NightCore> {
         DialogManager.shutdown();
     }
 
+    private void startAsyncMenuTicker() {
+        this.plugin.getFoliaScheduler().runTimerAsync(() -> {
+            try {
+                this.processMenusAsync();
+            } catch (Exception e) {
+                this.plugin.error("Error processing menus async: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }, 0L, 1L);
+    }
+
+    private void processMenusAsync() {
+        AsyncMenuUpdate update = this.asyncProcessor.processMenusAsync();
+
+        if (update.hasUpdates()) {
+            this.plugin.getFoliaScheduler().runNextTick(() -> {
+                try {
+                    update.applyToMainThread();
+                } catch (Exception e) {
+                    this.plugin.error("Error applying menu update: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            });
+        }
+    }
+
     private void tickMenusAndDialogs() {
-        this.tickDialogs();
-        this.tickMenus();
+        this.processMenusAsync();
     }
 
     private void tickDialogs() {
