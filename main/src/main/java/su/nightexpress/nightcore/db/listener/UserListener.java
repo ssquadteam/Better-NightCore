@@ -27,15 +27,21 @@ public class UserListener<P extends NightPlugin, U extends AbstractUser> extends
         if (event.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED) return;
 
         UUID uuid = event.getUniqueId();
-        if (!this.manager.isInDatabase(uuid)) {
-            U user = this.manager.create(uuid, event.getName());
-            this.manager.addInDatabase(user);
-            this.manager.cacheTemporary(user);
-            //this.plugin.debug("Created new data for: '" + uuid + "'");
-            return;
-        }
+        String name = event.getName();
 
-        this.manager.getOrFetch(uuid); // Fetch and cache temporary.
+        this.manager.isInDatabaseAsync(uuid).thenAccept(exists -> {
+            if (!exists) {
+                U user = this.manager.create(uuid, name);
+                this.manager.addInDatabase(user);
+                this.manager.cacheTemporary(user);
+            } else {
+                this.manager.getOrFetchAsync(uuid).thenAccept(user -> {
+                    if (user != null) {
+                        this.manager.cacheTemporary(user);
+                    }
+                });
+            }
+        });
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

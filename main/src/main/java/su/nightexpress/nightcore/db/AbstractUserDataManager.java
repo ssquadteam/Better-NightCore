@@ -134,6 +134,8 @@ public abstract class AbstractUserDataManager <P extends NightPlugin, U extends 
     }
 
     public void saveUsers(@NotNull Collection<U> users) {
+        if (users.isEmpty()) return;
+
         UpdateQuery<U> query = UserQueries.update();
         this.addUpsertQueryData(query);
 

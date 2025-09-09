@@ -20,6 +20,7 @@ public abstract class AbstractUserManager<P extends NightPlugin, U extends Abstr
 
     private final UserdataConfig                config;
     private final AbstractUserDataManager<P, U> dataManager;
+    private final AsyncDatabaseOperations       asyncDb;
 
     private final Map<UUID, U>   loadedByIdMap;
     private final Map<String, U> loadedByNameMap;
@@ -28,6 +29,7 @@ public abstract class AbstractUserManager<P extends NightPlugin, U extends Abstr
         super(plugin);
         this.config = UserdataConfig.read(plugin);
         this.dataManager = dataManager;
+        this.asyncDb = new AsyncDatabaseOperations(plugin);
         this.loadedByIdMap = new ConcurrentHashMap<>();
         this.loadedByNameMap = new ConcurrentHashMap<>();
     }
@@ -104,12 +106,16 @@ public abstract class AbstractUserManager<P extends NightPlugin, U extends Abstr
     private void saveScheduled(@NotNull Collection<U> users) {
         if (users.isEmpty()) return;
 
-        this.dataManager.saveUsers(users);
-        //this.plugin.debug("Saved " + users.size() + " users");
-
-        users.forEach(user -> {
-            user.disableAutoSave(); // Reset autosave timestamp.
-            user.setAutoSyncIn(this.config.getSaveSyncPause()); // Unlock synchronization only when all data was pushed to the database.
+        this.asyncDb.executeAsync("batch-user-save", () -> {
+            this.dataManager.saveUsers(users);
+            //this.plugin.debug("Saved " + users.size() + " users");
+        }).thenRun(() -> {
+            this.plugin.getFoliaScheduler().runNextTick(() -> {
+                users.forEach(user -> {
+                    user.disableAutoSave(); // Reset autosave timestamp.
+                    user.setAutoSyncIn(this.config.getSaveSyncPause()); // Unlock synchronization only when all data was pushed to the database.
+                });
+            });
         });
     }
 
@@ -171,6 +177,11 @@ public abstract class AbstractUserManager<P extends NightPlugin, U extends Abstr
         return this.dataManager.isUserExists(uuid);
     }
 
+    @NotNull
+    public CompletableFuture<Boolean> isInDatabaseAsync(@NotNull UUID uuid) {
+        return this.asyncDb.checkExistsAsync(uuid.toString(), () -> this.dataManager.isUserExists(uuid));
+    }
+
     public void addInDatabase(@NotNull U user) {
         this.dataManager.insertUser(user);
     }
@@ -197,11 +208,12 @@ public abstract class AbstractUserManager<P extends NightPlugin, U extends Abstr
         if (user != null) return user;
 
         if (Players.isReal(player)) {
-            user = this.getOrFetch(uuid);
-            if (user != null) {
-                //new Throwable().printStackTrace();
-                this.plugin.warn("Main thread user data load for '" + uuid + "' aka '" + player.getName() + "'.");
-                return user;
+            if (this.isInDatabase(uuid)) {
+                user = this.getOrFetch(uuid);
+                if (user != null) {
+                    this.plugin.warn("Main thread user data load for '" + uuid + "' aka '" + player.getName() + "'. Consider using async methods.");
+                    return user;
+                }
             }
         }
 
@@ -234,6 +246,22 @@ public abstract class AbstractUserManager<P extends NightPlugin, U extends Abstr
         }
 
         return user;
+    }
+
+    @NotNull
+    public CompletableFuture<U> getOrFetchAsync(@NotNull UUID uuid) {
+        U user = this.getLoaded(uuid);
+        if (user != null) {
+            return CompletableFuture.completedFuture(user);
+        }
+
+        return this.asyncDb.loadDataAsync(uuid.toString(), () -> {
+            U dbUser = this.getFromDatabase(uuid);
+            if (dbUser != null) {
+                this.load(dbUser);
+            }
+            return dbUser;
+        });
     }
 
     public final CompletableFuture<U> getUserDataAsync(@NotNull String name) {
