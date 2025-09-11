@@ -295,7 +295,11 @@ public abstract class NightPlugin extends JavaPlugin implements NightCorePlugin 
         if (this.isShuttingDown) {
             runnable.run();
         } else {
-            this.runNextTick(runnable);
+            if (org.bukkit.Bukkit.isPrimaryThread()) {
+                runnable.run();
+            } else {
+                org.bukkit.Bukkit.getScheduler().runTask(this, runnable);
+            }
         }
     }
 }

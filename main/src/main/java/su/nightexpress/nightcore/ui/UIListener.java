@@ -31,11 +31,17 @@ public class UIListener extends AbstractListener<NightCore> {
 
     private void handleDialogInput(@NotNull Player player, @NotNull Dialog dialog, @NotNull DialogInput input) {
         // Jump back to the main thread from async chat thread.
-        this.plugin.runTask(task -> {
+        if (this.plugin.isShuttingDown()) {
             if (input.getTextRaw().equalsIgnoreCase(DialogManager.EXIT) || dialog.getHandler().handle(input)) {
                 DialogManager.stopDialog(player);
             }
-        });
+        } else {
+            org.bukkit.Bukkit.getScheduler().runTask(this.plugin, () -> {
+                if (input.getTextRaw().equalsIgnoreCase(DialogManager.EXIT) || dialog.getHandler().handle(input)) {
+                    DialogManager.stopDialog(player);
+                }
+            });
+        }
     }
 
     @EventHandler(priority = EventPriority.NORMAL)

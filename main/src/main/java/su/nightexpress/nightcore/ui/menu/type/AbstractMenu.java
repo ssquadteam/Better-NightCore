@@ -157,7 +157,17 @@ public abstract class AbstractMenu<P extends NightPlugin> implements Menu {
             }
             view = Engine.software().createView(this.menuType, NightMessage.parse(title), player);
             viewer.assignInventory(view);
-            player.openInventory(view);
+
+            final InventoryView finalView = view;
+            if (org.bukkit.Bukkit.isPrimaryThread()) {
+                player.openInventory(finalView);
+            } else {
+                org.bukkit.Bukkit.getScheduler().runTask(this.plugin, () -> {
+                    if (player.isOnline()) {
+                        player.openInventory(finalView);
+                    }
+                });
+            }
         }
         else {
             view.getTopInventory().clear();

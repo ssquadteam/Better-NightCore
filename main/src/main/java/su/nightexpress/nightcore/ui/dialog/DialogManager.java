@@ -96,7 +96,15 @@ public class DialogManager {
         Player player = dialog.getPlayer();
         Menu menu = dialog.getLastMenu();
         if (menu != null) {
-            menu.flush(player, viewer -> viewer.setPage(dialog.getLastPage()));
+            if (org.bukkit.Bukkit.isPrimaryThread()) {
+                menu.flush(player, viewer -> viewer.setPage(dialog.getLastPage()));
+            } else {
+                org.bukkit.Bukkit.getScheduler().runTask(org.bukkit.Bukkit.getPluginManager().getPlugin("nightcore"), () -> {
+                    if (player.isOnline()) {
+                        menu.flush(player, viewer -> viewer.setPage(dialog.getLastPage()));
+                    }
+                });
+            }
         }
 
         DIALOG_MAP.remove(player.getUniqueId());

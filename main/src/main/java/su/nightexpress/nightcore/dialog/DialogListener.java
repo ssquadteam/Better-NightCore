@@ -36,11 +36,17 @@ public class DialogListener extends AbstractListener<NightCore> {
 
         WrappedInput input = new WrappedInput(event);
 
-        this.plugin.runTask(task -> {
+        if (this.plugin.isShuttingDown()) {
             if (input.getTextRaw().equalsIgnoreCase(Dialog.EXIT) || dialog.getHandler().onInput(dialog, input)) {
                 Dialog.stop(player);
             }
-        });
+        } else {
+            org.bukkit.Bukkit.getScheduler().runTask(this.plugin, () -> {
+                if (input.getTextRaw().equalsIgnoreCase(Dialog.EXIT) || dialog.getHandler().onInput(dialog, input)) {
+                    Dialog.stop(player);
+                }
+            });
+        }
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -64,10 +70,16 @@ public class DialogListener extends AbstractListener<NightCore> {
         AsyncPlayerChatEvent chatEvent = new AsyncPlayerChatEvent(true, player, text, new HashSet<>());
         WrappedInput input = new WrappedInput(chatEvent);
 
-        this.plugin.runTask(task -> {
+        if (this.plugin.isShuttingDown()) {
             if (input.getTextRaw().equalsIgnoreCase(Dialog.EXIT) || dialog.getHandler().onInput(dialog, input)) {
                 Dialog.stop(player);
             }
-        });
+        } else {
+            org.bukkit.Bukkit.getScheduler().runTask(this.plugin, () -> {
+                if (input.getTextRaw().equalsIgnoreCase(Dialog.EXIT) || dialog.getHandler().onInput(dialog, input)) {
+                    Dialog.stop(player);
+                }
+            });
+        }
     }
 }
