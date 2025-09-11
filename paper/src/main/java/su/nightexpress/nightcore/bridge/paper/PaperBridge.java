@@ -191,12 +191,29 @@ public class PaperBridge implements Software {
     @Override
     @NotNull
     public InventoryView createView(@NotNull MenuType menuType, @NotNull NightComponent title, @NotNull Player player) {
-        if (Version.isAtLeast(Version.MC_1_21_4)) {
-            return menuType.typed().builder().title(adaptComponent(title)).build(player);
+        try {
+            if (Version.isAtLeast(Version.MC_1_21_4)) {
+                return menuType.typed().builder().title(adaptComponent(title)).build(player);
+            }
+            else {
+                return menuType.typed().create(player, adaptComponent(title));
+            }
+        } catch (NullPointerException e) {
+            if (e.getMessage() != null && e.getMessage().contains("getCurrentWorldData")) {
+                return createFoliaCompatibleView(menuType, title, player);
+            }
+            throw e;
         }
-        else {
-            return menuType.typed().create(player, adaptComponent(title));
-        }
+    }
+
+    @NotNull
+    private InventoryView createFoliaCompatibleView(@NotNull MenuType menuType, @NotNull NightComponent title, @NotNull Player player) {
+        org.bukkit.inventory.Inventory inventory;
+        Component titleComponent = adaptComponent(title);
+
+        inventory = org.bukkit.Bukkit.createInventory(null, 27, titleComponent);
+
+        return player.openInventory(inventory);
     }
 
     @Override

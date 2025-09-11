@@ -162,7 +162,7 @@ public abstract class AbstractMenu<P extends NightPlugin> implements Menu {
             if (org.bukkit.Bukkit.isPrimaryThread()) {
                 player.openInventory(finalView);
             } else {
-                org.bukkit.Bukkit.getScheduler().runTask(this.plugin, () -> {
+                this.plugin.runTask(() -> {
                     if (player.isOnline()) {
                         player.openInventory(finalView);
                     }
