@@ -289,7 +289,9 @@ public class Players {
 
         command = Placeholders.forPlayerWithPAPI(player).apply(command).trim();
 
-        Bukkit.dispatchCommand(sender, command);
+        final CommandSender finalSender = sender;
+        final String finalCommand = command;
+        Engine.scheduler().runNextTick(() -> Bukkit.dispatchCommand(finalSender, finalCommand));
     }
 
     public static boolean hasEmptyInventory(@NotNull Player player) {
