@@ -99,7 +99,7 @@ public class DialogManager {
             if (org.bukkit.Bukkit.isPrimaryThread()) {
                 menu.flush(player, viewer -> viewer.setPage(dialog.getLastPage()));
             } else {
-                org.bukkit.Bukkit.getScheduler().runTask(org.bukkit.Bukkit.getPluginManager().getPlugin("nightcore"), () -> {
+                su.nightexpress.nightcore.Engine.core().runAtEntity(player, () -> {
                     if (player.isOnline()) {
                         menu.flush(player, viewer -> viewer.setPage(dialog.getLastPage()));
                     }

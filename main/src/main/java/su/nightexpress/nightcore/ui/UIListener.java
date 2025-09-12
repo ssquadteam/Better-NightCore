@@ -36,7 +36,7 @@ public class UIListener extends AbstractListener<NightCore> {
                 DialogManager.stopDialog(player);
             }
         } else {
-            org.bukkit.Bukkit.getScheduler().runTask(this.plugin, () -> {
+            this.plugin.runAtEntity(player, () -> {
                 if (input.getTextRaw().equalsIgnoreCase(DialogManager.EXIT) || dialog.getHandler().handle(input)) {
                     DialogManager.stopDialog(player);
                 }

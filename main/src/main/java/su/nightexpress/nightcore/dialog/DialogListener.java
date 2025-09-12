@@ -41,7 +41,7 @@ public class DialogListener extends AbstractListener<NightCore> {
                 Dialog.stop(player);
             }
         } else {
-            org.bukkit.Bukkit.getScheduler().runTask(this.plugin, () -> {
+            this.plugin.runAtEntity(player, () -> {
                 if (input.getTextRaw().equalsIgnoreCase(Dialog.EXIT) || dialog.getHandler().onInput(dialog, input)) {
                     Dialog.stop(player);
                 }
@@ -75,7 +75,7 @@ public class DialogListener extends AbstractListener<NightCore> {
                 Dialog.stop(player);
             }
         } else {
-            org.bukkit.Bukkit.getScheduler().runTask(this.plugin, () -> {
+            this.plugin.runAtEntity(player, () -> {
                 if (input.getTextRaw().equalsIgnoreCase(Dialog.EXIT) || dialog.getHandler().onInput(dialog, input)) {
                     Dialog.stop(player);
                 }
