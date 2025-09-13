@@ -108,6 +108,8 @@ public class MenuOptions {
     }
 
     public boolean isReadyToRefresh() {
-        return this.getAutoRefresh() > 0 && System.currentTimeMillis() - this.getLastAutoRefresh() >= this.getAutoRefresh();
+        int intervalSeconds = this.getAutoRefresh();
+        long intervalMillis = intervalSeconds <= 0 ? 0L : intervalSeconds * 1000L;
+        return intervalMillis > 0 && (System.currentTimeMillis() - this.getLastAutoRefresh()) >= intervalMillis;
     }
 }
