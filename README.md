@@ -46,7 +46,7 @@ This library is required for all [NightExpress](https://www.spigotmc.org/resourc
 - Server Software: [**Spigot**](https://www.spigotmc.org/link-forums/88/) or [**Paper**](https://papermc.io/downloads/paper)
 - Server Version: <span style="color:red">**1.21.1**</span> or above
 - Java Version: [**21**](https://adoptium.net/temurin/releases) or above
-- Folia Supported: <span style="color:red">**No**</span>
+- Folia Supported: <span style="color:green">**Hell Yeah**</span>
 - Forge Supported: <span style="color:red">**No**</span>
 
 ## Links
