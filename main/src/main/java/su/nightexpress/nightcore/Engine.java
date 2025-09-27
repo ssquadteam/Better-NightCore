@@ -5,18 +5,12 @@ import org.jetbrains.annotations.Nullable;
 import su.nightexpress.nightcore.bridge.paper.PaperBridge;
 import su.nightexpress.nightcore.integration.VaultHook;
 import su.nightexpress.nightcore.integration.permission.PermissionProvider;
-import su.nightexpress.nightcore.integration.permission.impl.LuckPermissionProvider;
-import su.nightexpress.nightcore.integration.permission.impl.VaultPermissionProvider;
-import su.nightexpress.nightcore.util.ItemNbt;
-import su.nightexpress.nightcore.util.Lists;
-import su.nightexpress.nightcore.util.Plugins;
-import su.nightexpress.nightcore.util.Version;
 import su.nightexpress.nightcore.util.bridge.Software;
 import su.nightexpress.nightcore.util.bukkit.FoliaScheduler;
 
-import java.util.HashSet;
 import java.util.Set;
 
+@Deprecated
 public class Engine {
 
     private static final Set<NightPlugin> CHILDRENS = new HashSet<>();
@@ -27,20 +21,21 @@ public class Engine {
     private static volatile boolean   isShuttingDown = false;
 
     @NotNull
+    @Deprecated
     public static Set<NightPlugin> getChildrens() {
-        return CHILDRENS;
+        return NightCore.CHILDRENS;
     }
 
     @NotNull
+    @Deprecated
     public static NightCore core() {
-        if (core == null) throw new IllegalStateException("NightCore is not initialized!");
-
-        return core;
+        return NightCore.get();
     }
 
     @NotNull
+    @Deprecated
     public static Software software() {
-        return Software.INSTANCE.get();
+        return Software.instance();
     }
 
     @NotNull
@@ -55,9 +50,10 @@ public class Engine {
 
     @Nullable
     public static PermissionProvider getPermissions() {
-        return permissions;
+        return PermissionBridge.getProvider();
     }
 
+    @Deprecated
     public static boolean hasPermissions() {
         return permissions != null;
     }
