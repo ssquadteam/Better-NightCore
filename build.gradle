@@ -42,6 +42,38 @@ allprojects {
             name = 'tcoded-releases'
             url = 'https://repo.tcoded.com/releases'
         }
+        maven {
+            name = 'spigot-repo'
+            url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+        }
+        maven {
+            name = 'codemc-public'
+            url = 'https://repo.codemc.io/repository/maven-public/'
+        }
+        maven {
+            name = 'codemc-releases'
+            url = 'https://repo.codemc.io/repository/maven-releases/'
+        }
+        maven {
+            name = 'rosewood-public'
+            url = 'https://repo.rosewooddev.io/repository/public/'
+        }
+        maven {
+            name = 'bencodez-public'
+            url = 'https://nexus.bencodez.com/repository/maven-public/'
+        }
+        maven {
+            name = 'techscode-apis'
+            url = 'https://repo.techscode.com/repository/techscode-apis/'
+        }
+        maven {
+            name = 'phoenix-public'
+            url = 'https://nexus.phoenixdevt.fr/repository/maven-public/'
+        }
+        maven {
+            name = 'nightexpress-releases'
+            url = 'https://repo.nightexpressdev.com/releases'
+        }
     }
     
     dependencies {

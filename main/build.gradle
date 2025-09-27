@@ -23,6 +23,11 @@ dependencies {
     compileOnly 'org.xerial:sqlite-jdbc:3.47.0.0'
     compileOnly 'it.unimi.dsi:fastutil-core:8.5.13'
 
+    // Local plugin jars
+    compileOnly fileTree(dir: "${rootProject.projectDir}/libs", include: [
+        "ExcellentCrates-*.jar"
+    ])
+
     implementation 'redis.clients:jedis:5.1.4'
     implementation 'org.apache.commons:commons-pool2:2.11.1'
     implementation 'com.tcoded:FoliaLib:0.5.1'

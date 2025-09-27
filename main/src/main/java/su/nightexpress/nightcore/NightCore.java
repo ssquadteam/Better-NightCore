@@ -5,7 +5,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.nightcore.bridge.paper.PaperBridge;
-import su.nightexpress.nightcore.bridge.spigot.SpigotBridge;
 import su.nightexpress.nightcore.commands.command.NightCommand;
 import su.nightexpress.nightcore.config.PluginDetails;
 import su.nightexpress.nightcore.core.CoreConfig;
@@ -69,7 +68,7 @@ public class NightCore extends NightPlugin {
 
         Version version = Version.detect();
         if (!version.isDropped()) {
-            Software.INSTANCE.load(Version.isPaper() ? new PaperBridge() : new SpigotBridge());
+Software.INSTANCE.load(new PaperBridge());
             this.info("Server version detected as " + version.getLocalized() + ". Using " + Software.instance().getName() + ".");
 
             if (!testNbt()) {
