@@ -8,6 +8,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import su.nightexpress.nightcore.integration.item.data.ItemIdData;
 import su.nightexpress.nightcore.integration.item.adapter.IdentifiableItemAdapter;
+import io.lumine.mythic.lib.api.item.NBTItem;
+import io.lumine.mythic.lib.util.MMOPlugin;
+import io.lumine.mythic.lib.player.cooldown.CooldownObject;
+import io.lumine.mythic.lib.util.PreloadedObject;
 
 public class MMOItemsAdapter extends IdentifiableItemAdapter {
 
