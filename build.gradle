@@ -74,6 +74,22 @@ allprojects {
             name = 'nightexpress-releases'
             url = 'https://repo.nightexpressdev.com/releases'
         }
+        maven {
+            name = 'oraxen'
+            url = 'https://repo.oraxen.com/releases'
+        }
+        maven {
+            name = 'nexo'
+            url = 'https://repo.nexomc.com/releases'
+        }
+        maven {
+            name = 'MagmaGuy'
+            url = uri("https://repo.magmaguy.com/releases")
+        }
+        maven {
+            name = 'codemc-creatorfromhell'
+            url = 'https://repo.codemc.io/repository/creatorfromhell/'
+        }
     }
     
     dependencies {

@@ -5,10 +5,18 @@ import org.jetbrains.annotations.Nullable;
 import su.nightexpress.nightcore.bridge.paper.PaperBridge;
 import su.nightexpress.nightcore.integration.VaultHook;
 import su.nightexpress.nightcore.integration.permission.PermissionProvider;
+import su.nightexpress.nightcore.integration.permission.PermissionBridge;
+import su.nightexpress.nightcore.integration.permission.impl.LuckPermissionProvider;
+import su.nightexpress.nightcore.integration.permission.impl.VaultPermissionProvider;
+import su.nightexpress.nightcore.util.ItemNbt;
+import su.nightexpress.nightcore.util.Plugins;
+import su.nightexpress.nightcore.util.Version;
+import su.nightexpress.nightcore.util.Lists;
 import su.nightexpress.nightcore.util.bridge.Software;
 import su.nightexpress.nightcore.util.bukkit.FoliaScheduler;
 
 import java.util.Set;
+import java.util.HashSet;
 
 @Deprecated
 public class Engine {
@@ -61,9 +69,6 @@ public class Engine {
     public static void clear() {
         isShuttingDown = true;
 
-        if (Plugins.hasVault()) {
-            VaultHook.shutdown();
-        }
 
         if (foliaScheduler != null) {
             foliaScheduler.cancelAllTasks();
@@ -87,14 +92,9 @@ public class Engine {
         Software.INSTANCE.load(new PaperBridge());
         core.info("Server version detected as " + version.getLocalized() + ". Using " + software().getName() + ".");
 
-        ItemNbt.load(core);
         loadPermissionsProvider();
 
         Plugins.detectPlugins();
-
-        if (Plugins.hasVault()) {
-            VaultHook.load();
-        }
     }
 
     private static void loadPermissionsProvider() {
@@ -107,7 +107,6 @@ public class Engine {
         else return;
 
         core.info("Found permissions provider: " + permissions.getName());
-        core.runNextTick(() -> permissions.setup()); // Run after the server load to setup Vault services properly.
     }
 
     public static boolean handleEnable(@NotNull NightPlugin plugin) {
