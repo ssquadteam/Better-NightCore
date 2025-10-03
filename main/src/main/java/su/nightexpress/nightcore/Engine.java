@@ -48,7 +48,7 @@ public class Engine {
 
     @NotNull
     public static FoliaScheduler scheduler() {
-        if (foliaScheduler == null) throw new IllegalStateException("FoliaScheduler is not initialized!");
+        initializeSchedulerIfAbsent();
         return foliaScheduler;
     }
 
@@ -78,6 +78,26 @@ public class Engine {
         permissions = null;
         foliaScheduler = null;
         core = null;
+    }
+
+    private static synchronized void initializeSchedulerIfAbsent() {
+        if (foliaScheduler != null) return;
+
+        // NightCore should be initialized by the time scheduling is needed.
+        // If it's not yet available, avoid throwing and let callers run inline when needed.
+        NightCore plugin;
+        try {
+            plugin = NightCore.get();
+        }
+        catch (IllegalStateException ignored) {
+            return;
+        }
+
+        Version version = Version.getCurrent() != null ? Version.getCurrent() : Version.detect();
+        if (version.isDropped()) return;
+
+        foliaScheduler = new FoliaScheduler(plugin);
+        plugin.info("Scheduler initialized for " + (foliaScheduler.isFolia() ? "Folia" : foliaScheduler.isPaper() ? "Paper" : "Spigot") + " server.");
     }
 
     private static void init(@NotNull NightCore instance) {

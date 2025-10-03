@@ -71,6 +71,10 @@ public class NightCore extends NightPlugin {
 Software.INSTANCE.load(new PaperBridge());
             this.info("Server version detected as " + version.getLocalized() + ". Using " + Software.instance().getName() + ".");
 
+            // Ensure Folia/Paper scheduler is initialized early for compatibility
+            // across Folia, Paper and Spigot servers.
+            su.nightexpress.nightcore.Engine.scheduler();
+
             if (!testNbt()) {
                 this.error("Could not initialize NBT Utils.");
                 return false;
