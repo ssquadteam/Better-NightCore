@@ -208,11 +208,25 @@ public class PaperBridge implements Software {
 
     @NotNull
     private InventoryView createFoliaCompatibleView(@NotNull MenuType menuType, @NotNull NightComponent title, @NotNull Player player) {
-        org.bukkit.inventory.Inventory inventory;
         Component titleComponent = adaptComponent(title);
 
-        inventory = org.bukkit.Bukkit.createInventory(null, 27, titleComponent);
+        // Derive a sensible default size from the MenuType when typed builders are unavailable.
+        int size = 27; // fallback
+        try {
+            // The GENERIC_9Xn menu types cover most plugin GUI use cases.
+            if (menuType == MenuType.GENERIC_9X1) size = 9;
+            else if (menuType == MenuType.GENERIC_9X2) size = 18;
+            else if (menuType == MenuType.GENERIC_9X3) size = 27;
+            else if (menuType == MenuType.GENERIC_9X4) size = 36;
+            else if (menuType == MenuType.GENERIC_9X5) size = 45;
+            else if (menuType == MenuType.GENERIC_9X6) size = 54;
+            else if (menuType == MenuType.HOPPER) size = 5;
+            else if (menuType == MenuType.DISPENSER || menuType == MenuType.DROPPER) size = 9;
+        } catch (Throwable ignored) {
+            // On older servers some MenuType constants may not exist - keep fallback size.
+        }
 
+        org.bukkit.inventory.Inventory inventory = org.bukkit.Bukkit.createInventory(player, size, titleComponent);
         return player.openInventory(inventory);
     }
 
