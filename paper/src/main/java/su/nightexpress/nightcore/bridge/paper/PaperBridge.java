@@ -221,7 +221,6 @@ public class PaperBridge implements Software {
             else if (menuType == MenuType.GENERIC_9X5) size = 45;
             else if (menuType == MenuType.GENERIC_9X6) size = 54;
             else if (menuType == MenuType.HOPPER) size = 5;
-            else if (menuType == MenuType.DISPENSER || menuType == MenuType.DROPPER) size = 9;
         } catch (Throwable ignored) {
             // On older servers some MenuType constants may not exist - keep fallback size.
         }
