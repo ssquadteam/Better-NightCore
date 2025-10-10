@@ -208,12 +208,11 @@ public abstract class AbstractUserManager<P extends NightPlugin, U extends Abstr
         if (user != null) return user;
 
         if (Players.isReal(player)) {
-            if (this.isInDatabase(uuid)) {
-                user = this.getOrFetch(uuid);
-                if (user != null) {
-                    this.plugin.warn("Main thread user data load for '" + uuid + "' aka '" + player.getName() + "'. Consider using async methods.");
-                    return user;
-                }
+            U dbUser = this.getFromDatabase(uuid);
+            if (dbUser != null) {
+                this.plugin.warn("Main thread user data load for '" + uuid + "' aka '" + player.getName() + "'. Consider using async methods.");
+                this.load(dbUser);
+                return dbUser;
             }
         }
 
