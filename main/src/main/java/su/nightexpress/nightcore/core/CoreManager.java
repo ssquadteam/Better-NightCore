@@ -153,4 +153,8 @@ public class CoreManager extends AbstractManager<NightCore> {
         });
         MenuRegistry.getViewers().stream().map(MenuViewer::getMenu).distinct().forEach(Menu::tick);
     }
+
+    private void updateProfiles() {
+        PlayerProfiles.getCachedProfiles().forEach(profile -> profile.update());
+    }
 }
