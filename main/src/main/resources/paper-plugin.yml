@@ -20,26 +20,38 @@ dependencies:
     floodgate:
       required: false
     CoinsEngine:
+      load: AFTER
       required: false
     BeastTokens:
+      load: AFTER
       required: false
     EliteMobs:
+      load: AFTER
       required: false
     PlayerPoints:
+      load: AFTER
       required: false
     UltraEconomy:
+      load: AFTER
       required: false
     VotingPlugin:
+      load: AFTER
       required: false
     ExcellentCrates:
+      load: AFTER
       required: false
     ExecutableItems:
+      load: AFTER
       required: false
     ItemsAdder:
+      load: AFTER
       required: false
     MMOItems:
+      load: AFTER
       required: false
     Nexo:
+      load: AFTER
       required: false
     Oraxen:
+      load: AFTER
       required: false

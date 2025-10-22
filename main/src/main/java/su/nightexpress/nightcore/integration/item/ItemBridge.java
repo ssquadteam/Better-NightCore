@@ -7,6 +7,7 @@ import su.nightexpress.nightcore.bridge.Registries;
 import su.nightexpress.nightcore.bridge.item.ItemAdapter;
 import su.nightexpress.nightcore.bridge.registry.NightRegistry;
 import su.nightexpress.nightcore.integration.item.adapter.impl.VanillaItemAdapter;
+import su.nightexpress.nightcore.util.LowerCase;
 
 import java.util.Comparator;
 import java.util.Optional;
@@ -19,12 +20,12 @@ public class ItemBridge {
     }
 
     @NotNull
-    public static NightRegistry<ItemAdapter<?>> registry() {
+    public static NightRegistry<String, ItemAdapter<?>> registry() {
         return Registries.ITEM_ADAPTER;
     }
 
     public static void register(@NotNull ItemAdapter<?> adapter) {
-        registry().add(adapter.getName(), adapter);
+        registry().register(adapter.getName(), adapter);
     }
 
     @NotNull
@@ -39,12 +40,12 @@ public class ItemBridge {
 
     @Nullable
     public static ItemAdapter<?> getAdapter(@NotNull String name) {
-        return registry().byKey(name);
+        return registry().byKey(LowerCase.INTERNAL.apply(name));
     }
 
     @NotNull
     public static ItemAdapter<?> getAdapterOrVanilla(@NotNull String name) {
-        return registry().lookup(name).orElse(VanillaItemAdapter.INSTANCE);
+        return registry().lookup(LowerCase.INTERNAL.apply(name)).orElse(VanillaItemAdapter.INSTANCE);
     }
 
     @NotNull

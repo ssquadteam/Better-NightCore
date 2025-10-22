@@ -26,14 +26,20 @@ public class TagWrappers {
     public static final String NEWLINE = TagWrapper.simple(TagShortNames.NEWLINE).opening();
 
     public static final OneArgument<SimpleTagWrapper> FONT      = font -> TagWrapper.withArguments(TagShortNames.FONT, font);
-    public static final OneArgument<SimpleTagWrapper> KEY       = key -> TagWrapper.withArguments(TagShortNames.KEYBIND, key);
+    public static final Function<String, String>      KEY       = key -> TagWrapper.withArguments(TagShortNames.KEYBIND, key).opening();
     public static final OneArgument<SimpleTagWrapper> INSERTION = text -> TagWrapper.withArguments(TagShortNames.INSERTION, text);
+
+    public static final BiFunction<String, String, String> SPRITE          = (atlas, sprite) -> TagWrapper.withArguments(TagShortNames.SPRITE, ParserUtils.quoted(atlas), ParserUtils.quoted(sprite)).opening();
+    public static final Function<String, String>           SPRITE_NO_ATLAS = sprite -> TagWrapper.withArguments(TagShortNames.SPRITE, ParserUtils.quoted(sprite)).opening();
+
+    public static final BiFunction<String, Boolean, String> HEAD     = (data, hat) -> TagWrapper.withArguments(TagShortNames.HEAD, ParserUtils.quoted(data), String.valueOf(hat)).opening();
+    public static final Function<String, String>            HEAD_HAT = data -> TagWrapper.withArguments(TagShortNames.HEAD, ParserUtils.quoted(data)).opening();
 
     public static final Function<String, String>           LANG    = key -> TagWrapper.withArguments(TagShortNames.LANG, ParserUtils.quoted(key)).opening();
     public static final BiFunction<String, String, String> LANG_OR = (key, fallback) -> TagWrapper.withArguments(TagShortNames.LANG_OR, ParserUtils.quoted(key), ParserUtils.quoted(fallback)).opening();
 
-    public static final OneArgument<SimpleTagWrapper> SHOW_TEXT = text -> TagWrapper.withArguments(TagShortNames.HOVER, NightHoverEvent.Action.SHOW_TEXT.name(), ParserUtils.quoted(text));
-    public static final OneArgument<SimpleTagWrapper> SHOW_ITEM = text -> TagWrapper.withArguments(TagShortNames.HOVER, NightHoverEvent.Action.SHOW_ITEM.name(), ParserUtils.quoted(text));
+    public static final OneArgument<SimpleTagWrapper> SHOW_TEXT = text -> TagWrapper.withArguments(TagShortNames.HOVER, NightHoverEvent.Action.SHOW_TEXT.name(), ParserUtils.quoted(ParserUtils.escapeQuotes(text)));
+    public static final OneArgument<SimpleTagWrapper> SHOW_ITEM = text -> TagWrapper.withArguments(TagShortNames.HOVER, NightHoverEvent.Action.SHOW_ITEM.name(), ParserUtils.quoted(ParserUtils.escapeQuotes(text)));
 
     public static final OneArgument<SimpleTagWrapper> SUGGEST_COMMAND   = command -> TagWrapper.withArguments(TagShortNames.CLICK, NightClickEvent.Action.SUGGEST_COMMAND.toString(), ParserUtils.quoted(command));
     public static final OneArgument<SimpleTagWrapper> RUN_COMMAND       = command -> TagWrapper.withArguments(TagShortNames.CLICK, NightClickEvent.Action.RUN_COMMAND.toString(), ParserUtils.quoted(command));

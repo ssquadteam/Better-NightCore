@@ -2,49 +2,57 @@ package su.nightexpress.nightcore.bridge.registry;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import su.nightexpress.nightcore.util.LowerCase;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class NightRegistry<T> {
+public class NightRegistry<K, V> {
 
-    private final Map<String, T> byKey;
+    private final Map<K, V> byKey;
 
     private boolean frozen;
 
-    public NightRegistry(@NotNull Map<String, T> byKey) {
-        this.byKey = byKey;
+    public NightRegistry() {
+        this.byKey = new ConcurrentHashMap<>();
     }
 
-    @NotNull
-    public static <E> NightRegistry<E> create() {
-        return new NightRegistry<>(new ConcurrentHashMap<>());
+    public void register(@NotNull K key, @NotNull V value) {
+        if (this.isFrozen()) throw new UnsupportedOperationException("Adding values to frozen registry");
+
+        this.byKey.put(key, value);
     }
 
-    public void add(@NotNull String key, @NotNull T value) {
-        if (this.isFrozen()) throw new UnsupportedOperationException("Could not add values to frozen registry!");
+    public void unregister(@NotNull K key) {
+        if (this.isFrozen()) throw new UnsupportedOperationException("Removing values from frozen registry");
 
-        this.byKey.put(LowerCase.INTERNAL.apply(key), value);
+        this.byKey.remove(key);
     }
 
     @Nullable
-    public T byKey(@NotNull String key) {
-        return this.byKey.get(LowerCase.INTERNAL.apply(key));
+    public V byKey(@NotNull K key) {
+        return this.byKey.get(key);
     }
 
     @NotNull
-    public Optional<T> lookup(@NotNull String key) {
+    public Optional<V> lookup(@NotNull K key) {
         return Optional.ofNullable(this.byKey(key));
     }
 
     @NotNull
-    public Set<T> values() {
+    public Map<K, V> map() {
+        return this.byKey;
+    }
+
+    @NotNull
+    public Set<V> values() {
         return new HashSet<>(this.byKey.values());
     }
 
     @NotNull
-    public Set<String> keys() {
+    public Set<K> keys() {
         return new HashSet<>(this.byKey.keySet());
     }
 
