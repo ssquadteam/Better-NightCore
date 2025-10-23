@@ -1,5 +1,6 @@
 package su.nightexpress.nightcore.db;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -210,7 +211,9 @@ public abstract class AbstractUserManager<P extends NightPlugin, U extends Abstr
         if (Players.isReal(player)) {
             U dbUser = this.getFromDatabase(uuid);
             if (dbUser != null) {
-                this.plugin.warn("Main thread user data load for '" + uuid + "' aka '" + player.getName() + "'. Consider using async methods.");
+                if (Bukkit.isPrimaryThread()) {
+                    this.plugin.warn("Main thread user data load for '" + uuid + "' aka '" + player.getName() + "'. Consider using async methods.");
+                }
                 this.load(dbUser);
                 return dbUser;
             }
